@@ -19,7 +19,8 @@ import static com.cronutils.model.CronType.QUARTZ;
 
 @RestController
 @RequestMapping("/events")
-public class EventController {
+public class
+EventController {
 
     private final EventService eventService;
     private final CronParser cronParser;
@@ -37,7 +38,7 @@ public class EventController {
         return eventService.createEvent(event);
     }
 
-    @PutMapping("/{id}")
+    @PutMapping("/{id}") //id ist platzhalter
     public Event update(@PathVariable String id, @RequestBody Event event) {
         validateCron(event.getCron());
         event.setId(id);
@@ -61,6 +62,11 @@ public class EventController {
         return eventService.listEvents(filter);
     }
 
+    @GetMapping("/hello")
+    public String hello(){
+        return "Hello World!";
+    }
+
     @GetMapping("/{id}")
     public Event getById(@PathVariable String id) {
         return eventService.getById(id);
@@ -71,7 +77,8 @@ public class EventController {
     public void delete(@PathVariable String id) {
         eventService.deleteEvent(id);
     }
-    /*Validation*/
+
+
     private void validateCron(String cronPattern) {
         try {
             cronParser.parse(cronPattern).validate();
@@ -85,4 +92,3 @@ public class EventController {
 
 }
 
-//hallo grützi
