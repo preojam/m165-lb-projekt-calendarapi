@@ -71,7 +71,7 @@ public class EventController {
     public void delete(@PathVariable String id) {
         eventService.deleteEvent(id);
     }
-
+    /*Validation*/
     private void validateCron(String cronPattern) {
         try {
             cronParser.parse(cronPattern).validate();
