@@ -53,5 +53,6 @@ public class EventService {
     }
     public List<Event> saveAll(List<Event> events) {
         return repository.saveAll(events);
+
     }
 }
