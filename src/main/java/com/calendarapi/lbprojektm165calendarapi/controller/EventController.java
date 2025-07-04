@@ -18,7 +18,7 @@ import java.util.List;
 import static com.cronutils.model.CronType.QUARTZ;
 
 @RestController
-@RequestMapping("/events")
+@RequestMapping("/api/events")
 public class
 EventController {
 
@@ -89,6 +89,9 @@ EventController {
             );
         }
     }
-
+    @PostMapping("/batch")
+    public List<Event> createEvents(@RequestBody List<Event> events) {
+        return eventService.saveAll(events);
+    }
 }
 
