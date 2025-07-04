@@ -92,6 +92,7 @@ EventController {
     @PostMapping("/batch")
     public List<Event> createEvents(@RequestBody List<Event> events) {
         return eventService.saveAll(events);
+
     }
 }
 
