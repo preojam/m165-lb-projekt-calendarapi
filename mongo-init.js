@@ -9,7 +9,7 @@ if (!db.getCollectionNames().includes('events')) {
 }
 
 // Nur einmal befüllen, wenn leer
-if (db.events.countDocuments() === 0) {
+if (db.events.count() === 0) {
     db.events.insertMany([
         {
             // 1. Titel des Events

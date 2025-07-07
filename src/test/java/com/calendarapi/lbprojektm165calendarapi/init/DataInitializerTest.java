@@ -57,7 +57,7 @@ public class DataInitializerTest {
         runner.run();
         runner.run();
         assertThat(eventRepo.findAll())
-                .hasSize(2);
+                .hasSize(6);
     }
 
 }
