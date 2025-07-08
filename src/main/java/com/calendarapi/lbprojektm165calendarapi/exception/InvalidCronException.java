@@ -1,7 +1,7 @@
-private void validateCron(String cronPattern) {
-    try {
-        cronParser.parse(cronPattern).validate();
-    } catch (Exception e) {
-        throw new InvalidCronException(cronPattern);
+package com.calendarapi.lbprojektm165calendarapi.exception;
+
+public class InvalidCronException extends RuntimeException {
+    public InvalidCronException(String message) {
+        super(message);
     }
 }
