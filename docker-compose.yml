@@ -1,0 +1,26 @@
+services:
+  mongo:
+    image: mongo:5.0
+    container_name: calendarapi-mongo
+    ports:
+      - "27018:27017"
+    volumes:
+      - mongo-data:/data/db
+      - ./mongo-init.js:/docker-entrypoint-initdb.d/mongo-init.js:ro
+
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile    # dein Spring-Boot-Dockerfile
+    image: calendarapi-app
+    container_name: calendarapi-app
+    depends_on:
+      - mongo
+    ports:
+      - "8081:8080"
+    environment:
+      # Spring Boot liest diese Variable automatisch
+      SPRING_DATA_MONGODB_URI: mongodb://mongo:27017/calendar_db
+
+volumes:
+  mongo-data:
