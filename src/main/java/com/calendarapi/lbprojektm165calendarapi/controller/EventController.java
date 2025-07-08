@@ -7,7 +7,6 @@ import com.calendarapi.lbprojektm165calendarapi.model.Event;
 import com.calendarapi.lbprojektm165calendarapi.service.EventService;
 import com.calendarapi.lbprojektm165calendarapi.dto.FilterDto;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
@@ -15,7 +14,7 @@ import org.springframework.web.server.ResponseStatusException;
 import java.time.Instant;
 import java.util.List;
 
-import static com.cronutils.model.CronType.QUARTZ;
+import static com.cronutils.model.CronType.QUARTZ; // spring hat 6 stellig und quartz 7 stellig **900?
 
 @RestController
 @RequestMapping("/api/events")
@@ -28,7 +27,7 @@ EventController {
     @Autowired
     public EventController(EventService eventService) {
         this.eventService = eventService;
-        CronDefinition definition = CronDefinitionBuilder.instanceDefinitionFor(QUARTZ);
+        CronDefinition definition = CronDefinitionBuilder.instanceDefinitionFor(QUARTZ); // gewechselt zu spring
         this.cronParser = new CronParser(definition);
     }
 
