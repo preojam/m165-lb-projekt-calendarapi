@@ -51,8 +51,9 @@ public class EventService {
                 filter.getTag()
         );
     }
-    public List<Event> saveAll(List<Event> events) {
-        return repository.saveAll(events);
 
+    /** Speichert eine Liste von Event-Objekten in der MongoDB-Datenbank*/
+    public List<Event> saveAll(List<Event> events) {
+        return repository.saveAll(events); //gibt die gespeicherten Daten zurück (inkl. IDs)
     }
 }
