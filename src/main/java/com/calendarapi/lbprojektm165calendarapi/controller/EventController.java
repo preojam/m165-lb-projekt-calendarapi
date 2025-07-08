@@ -62,6 +62,7 @@ EventController {
         return eventService.listEvents(filter);
     }
 
+    //einfacher REST Endpunkt der auf die Anfrage /hello einen Text "Hello World!" ausgibt.
     @GetMapping("/hello")
     public String hello(){
         return "Hello World!";
@@ -78,21 +79,22 @@ EventController {
         eventService.deleteEvent(id);
     }
 
-
+    /**Validiert dient der Validierung von Cron Ausdrücken im kontext einem Spring Kontext*/
     private void validateCron(String cronPattern) {
         try {
-            cronParser.parse(cronPattern).validate();
-        } catch (Exception e) {
+            cronParser.parse(cronPattern).validate(); //validate() prüft, ob das Pattern syntaktisch und semantisch korrekt
+        } catch (Exception e) { //Falls die Validierung fehlschlägt fängt es die exception ab
             throw new ResponseStatusException(
-                    HttpStatus.BAD_REQUEST,
-                    "Ungültiges Cron-Pattern: " + cronPattern
+                    HttpStatus.BAD_REQUEST, //Der client bekommt den Fehlercode 400
+                    "Ungültiges Cron-Pattern: " + cronPattern //angezeigte error message
             );
         }
     }
-    @PostMapping("/batch")
-    public List<Event> createEvents(@RequestBody List<Event> events) {
-        return eventService.saveAll(events);
 
+    /**Rest Mapping Endpunkt im Controller */
+    @PostMapping("/batch") //Der Endpunkt reagiert auf HTTP POST-Anfragen an /api/events/batch
+    public List<Event> createEvents(@RequestBody List<Event> events) { //empfängt eine Liste von einem Json Body
+        return eventService.saveAll(events); //gibt die Liste an den Service der sie mit SaveAll in die Datenbank einschreibt
     }
 }
 
