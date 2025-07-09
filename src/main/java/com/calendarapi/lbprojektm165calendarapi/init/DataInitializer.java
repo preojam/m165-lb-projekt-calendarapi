@@ -96,7 +96,11 @@ public class DataInitializer {
             // Alle sechs Beispiel-Events speichern
             eventRepo.saveAll(List.of(
                     sprint,
-                    retro
+                    retro,
+                    marketing,
+                    devops,
+                    budget,
+                    webinar
             ));
 
             System.out.println("Seeded Event collection with example Events.");
