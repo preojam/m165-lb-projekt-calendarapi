@@ -95,5 +95,23 @@ EventController {
     public List<Event> createEvents(@RequestBody List<Event> events) { //empfängt eine Liste von einem Json Body
         return eventService.saveAll(events); //gibt die Liste an den Service der sie mit SaveAll in die Datenbank einschreibt
     }
+    @GetMapping
+    public List<Event> listEvents(
+            @RequestParam(required = false) String weekday,
+            @RequestParam(required = false) String month,
+            @RequestParam(required = false) String from,
+            @RequestParam(required = false) String to,
+            @RequestParam(required = false) String tag,
+            @RequestParam(required = false) String titleContains  // 👈 NEU
+    ) {
+        FilterDto filter = new FilterDto();
+        filter.setWeekday(weekday);
+        filter.setMonth(month);
+        filter.setFrom(from);
+        filter.setTo(to);
+        filter.setTag(tag);
+        filter.setTitleContains(titleContains);
+        return eventService.listEvents(filter);
+    }
 }
 
