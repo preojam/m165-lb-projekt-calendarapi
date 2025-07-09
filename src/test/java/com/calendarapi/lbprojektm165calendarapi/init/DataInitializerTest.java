@@ -19,6 +19,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 @ActiveProfiles("dev")
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 public class DataInitializerTest {
+
     @Autowired
     private EventRepository eventRepo;
 
@@ -26,19 +27,43 @@ public class DataInitializerTest {
     private ApplicationContext ctx;
 
     @BeforeAll
-    void setup() throws Exception {
+    void setupAndSeed() throws Exception {
+        // Vor allen Tests einmal löschen und Seeder ausführen
         eventRepo.deleteAll();
         CommandLineRunner runner = ctx.getBean("initData", CommandLineRunner.class);
         runner.run();
     }
 
     @Test
+    void testDataIsInitialized() {
+        // Nach dem ersten Seed müssen 6 Events da sein
+        List<Event> all = eventRepo.findAll();
+        assertThat(all).hasSize(6);
+    }
+
+    @Test
     void testContentOfSeededEvents() {
+        // Prüfe, dass alle sechs erwarteten Titel vorhanden sind
         List<Event> all = eventRepo.findAll();
         assertThat(all)
                 .extracting(Event::getTitle)
-                .containsExactly("Sprint Planning", "Team Retro");
+                .containsExactlyInAnyOrder(
+                        "Sprint Planning",
+                        "Team Retro",
+                        "Marketing-Meeting",
+                        "DevOps Check",
+                        "Budget Review Q3",
+                        "Customer Webinar"
+                );
     }
 
-    // … weitere Tests …
+    @Test
+    void testIdempotenceOfInitializer() throws Exception {
+        // Führt den Runner ein zweites und drittes Mal aus
+        CommandLineRunner runner = ctx.getBean("initData", CommandLineRunner.class);
+        runner.run();
+        runner.run();
+        // Da seeder deleteAll() + saveAll(6), bleibt es immer bei 6
+        assertThat(eventRepo.findAll()).hasSize(6);
+    }
 }
