@@ -2,28 +2,25 @@ services:
   mongo:
     image: mongo:5.0
     container_name: calendarapi-mongo
-    restart: always
     ports:
-      - "27017:27017"
-    environment:
-      MONGO_INITDB_DATABASE: calendar_db
+      - "27018:27017"
     volumes:
       - mongo-data:/data/db
       - ./mongo-init.js:/docker-entrypoint-initdb.d/mongo-init.js:ro
 
-  # Optional: Admin UI über mongo-express
-  mongo-express:
-    image: mongo-express:1.0
-    container_name: calendarapi-mongo-express
-    restart: always
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile    # dein Spring-Boot-Dockerfile
+    image: calendarapi-app
+    container_name: calendarapi-app
+    depends_on:
+      - mongo
     ports:
-      - "8081:8081"
+      - "8081:8080"
     environment:
-      ME_CONFIG_MONGODB_SERVER: mongo
-      ME_CONFIG_MONGODB_PORT: 27017
-      ME_CONFIG_MONGODB_ADMINUSERNAME: ""
-      ME_CONFIG_MONGODB_ADMINPASSWORD: ""
-      ME_CONFIG_MONGODB_ENABLE_ADMIN: "true"
+      # Spring Boot liest diese Variable automatisch
+      SPRING_DATA_MONGODB_URI: mongodb://mongo:27017/calendar_db
 
 volumes:
   mongo-data:
