@@ -106,9 +106,11 @@ public class FilterDto {
     public String getTitleContains() {
         return titleContains;
     }
+
     public LocalDate getDateFrom() {
         return dateFrom;
     }
+
     public LocalDate getDateTo() {
         return dateTo;
     }

@@ -85,7 +85,9 @@ EventController {
             @RequestParam(required = false) String from,
             @RequestParam(required = false) String to,
             @RequestParam(required = false) String tag,
-            @RequestParam(required = false) String titleContains  // 👈 NEU
+            @RequestParam(required = false) String titleContains,
+            @RequestParam(required = false) String dateFrom,
+            @RequestParam(required = false) String dateTo
     ) {
         FilterDto filter = new FilterDto();
         filter.setWeekday(weekday);
@@ -94,6 +96,8 @@ EventController {
         filter.setTo(to);
         filter.setTag(tag);
         filter.setTitleContains(titleContains);
+        filter.setDateFrom(dateFrom);
+        filter.setDateTo(dateTo);
         return eventService.listEvents(filter);
     }
 }
