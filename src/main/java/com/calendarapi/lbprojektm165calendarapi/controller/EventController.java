@@ -44,22 +44,6 @@ EventController {
         return eventService.updateEvent(event);
     }
 
-    @GetMapping
-    public List<Event> listEvents(
-            @RequestParam(required = false) String weekday,
-            @RequestParam(required = false) String month,
-            @RequestParam(required = false) String from,
-            @RequestParam(required = false) String to,
-            @RequestParam(required = false) String tag
-    ) {
-        FilterDto filter = new FilterDto();
-        filter.setWeekday(weekday);
-        filter.setMonth(month);
-        filter.setFrom(from);
-        filter.setTo(to);
-        filter.setTag(tag);
-        return eventService.listEvents(filter);
-    }
 
     //einfacher REST Endpunkt der auf die Anfrage /hello einen Text "Hello World!" ausgibt.
     @GetMapping("/hello")
