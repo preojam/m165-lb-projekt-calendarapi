@@ -41,15 +41,8 @@ public class EventService {
                 .orElseThrow(() -> new IllegalArgumentException("Event nicht gefunden: " + id));
     }
 
-    /** Listet Events mit den dynamischen Filterkriterien */
     public List<Event> listEvents(FilterDto filter) {
-        return repository.findByFilters(
-                filter.getWeekday(),
-                filter.getMonth(),
-                filter.getFrom(),
-                filter.getTo(),
-                filter.getTag()
-        );
+        return repository.findByFilters(filter);
     }
 
     /** Speichert eine Liste von Event-Objekten in der MongoDB-Datenbank*/

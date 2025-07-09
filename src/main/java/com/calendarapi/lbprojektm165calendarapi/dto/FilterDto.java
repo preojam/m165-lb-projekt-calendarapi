@@ -13,6 +13,7 @@ public class FilterDto {
     private Instant from;
     private Instant to;
     private String tag;
+    private String titleContains;
 
     // Setzt Wochentage aus CSV-String wie "MONDAY,TUESDAY"
     public void setWeekday(String weekdaysCsv) {
@@ -55,4 +56,12 @@ public class FilterDto {
     public Instant getFrom() { return from; }
     public Instant getTo() { return to; }
     public String getTag() { return tag; }
+
+    public void setTitleContains(String titleContains) {
+        this.titleContains = titleContains;
+    }
+    public String getTitleContains() {
+        return titleContains;
+    }
 }
+
