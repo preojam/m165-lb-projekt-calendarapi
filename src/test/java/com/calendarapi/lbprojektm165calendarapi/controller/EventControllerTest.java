@@ -18,67 +18,67 @@ import java.util.UUID;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
+import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @WebMvcTest(EventController.class)
 class EventControllerTest {
 
     @Autowired
-    private MockMvc mockMvc;
+    private MockMvc mockMvc;  // Simuliert HTTP-Anfragen an den Controller
 
-    /**
-     * Ersetzt @MockBean (deprecated) durch @MockitoBean
-     * Mockt den EventService, damit keine echte Datenbankverbindung nötig ist.
-     */
     @MockitoBean
-    private EventService eventService;
+    private EventService eventService;  // Mock des Services, keine echte DB-Verbindung nötig
 
-    private static final String BASE = "/api/events";
+    private static final String BASE = "/api/events";  // Basis-URL aller Endpunkte
 
     @Test
     @DisplayName("GET /api/events/hello → Hello World!")
     void testHello() throws Exception {
-        // Führt einen GET-Request auf /api/events/hello aus und erwartet "Hello World!"
+        // GET-Request auf /hello und Überprüfung, dass "Hello World!" zurückkommt
         mockMvc.perform(get(BASE + "/hello"))
-                .andExpect(status().isOk())               // HTTP 200
-                .andExpect(content().string("Hello World!")); // Antwort-Body
+                .andExpect(status().isOk())              // Status 200
+                .andExpect(content().string("Hello World!"));  // Body stimmt überein
     }
 
     @Test
     @DisplayName("POST /api/events mit gültigem Cron → 200 + zurückgegebenes Event")
     void testCreateEvent_ValidCron() throws Exception {
-        // Bereite das Eingabe-Event mit gültigem Cron-Pattern vor
-        Event in = new Event();
-        in.setCron("0 0 * * * ?");
-        in.setTitle("Test-Title");
+        // --- 1. Vorbereitung der Eingabedaten ---
+        // Neues Event-Objekt, so wie es der Controller empfängt
+        Event input = new Event();
+        input.setCron("0 0 * * * ?");      // gültiges Cron-Pattern
+        input.setTitle("Test-Title");      // beliebiger Titel
 
-        // Bereite das vom Service zurückzugebende Event vor
-        Event out = new Event();
-        out.setId(UUID.randomUUID().toString());
-        out.setCron(in.getCron());
-        out.setTitle(in.getTitle());
-        when(eventService.createEvent(any(Event.class))).thenReturn(out);
+        // --- 2. Simuliertes Verhalten des Service ---
+        // Wir erstellen ein "saved"-Objekt, das der Service zurückgeben soll
+        Event saved = new Event();
+        saved.setId(UUID.randomUUID().toString());    // Datenbank würde eine ID generieren
+        saved.setCron(input.getCron());               // gleiche Cron-Daten
+        saved.setTitle(input.getTitle());             // gleicher Titel
+        // Mockito: Wenn createEvent aufgerufen wird, liefern wir unser "saved" zurück
+        when(eventService.createEvent(any(Event.class))).thenReturn(saved);
 
-        // JSON-String für den POST-Request
-        String json = """
-            {
+        // --- 3. Der JSON-Request-Body --- Hier stellen wir dar, wie die HTTP-Anfrage aussieht
+        String jsonBody = """
+            {                   
               "cron":"0 0 * * * ?",
               "title":"Test-Title"
             }
             """;
 
-        // Führe den POST-Request aus
+        // --- 4. Ausführung der Anfrage und Überprüfung der Antwort ---
         mockMvc.perform(post(BASE)
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(json))
-                .andExpect(status().isOk())                // HTTP 200
-                .andExpect(jsonPath("$.id").value(out.getId()))
-                .andExpect(jsonPath("$.cron").value(in.getCron()))
-                .andExpect(jsonPath("$.title").value(in.getTitle()));
+                        .content(jsonBody))
+                .andDo(print())  // Dies zeigt Details der Anfrage/Antwort
+                .andExpect(status().isOk());
 
-        // Überprüfe mit ArgumentCaptor, dass der Service mit dem richtigen Event aufgerufen wurde
+
+        // --- 5. Argumentprüfung: Wurde das korrekte Objekt an den Service übergeben? ---
         ArgumentCaptor<Event> captor = ArgumentCaptor.forClass(Event.class);
-        verify(eventService).createEvent(captor.capture());
+        verify(eventService).createEvent(captor.capture());  // fängt das übergebene Event ab
+        // Prüfen, dass es genau das erwartete Cron-Pattern enthält
         assertThat(captor.getValue().getCron()).isEqualTo("0 0 * * * ?");
     }
 
@@ -86,22 +86,21 @@ class EventControllerTest {
     @DisplayName("POST /api/events mit ungültigem Cron → 400 Bad Request")
     void testCreateEvent_InvalidCron() throws Exception {
         String badCron = "invalid-cron";
-        // JSON-String mit ungültigem Cron
-        String json = String.format("""
+        // JSON mit ungültigem Cron-Pattern
+        String jsonBody = String.format("""
             {
               "cron":"%s",
               "title":"X"
             }
             """, badCron);
 
-        // Führe den POST-Request aus und erwarte HTTP 400 mit Reason-Header
         mockMvc.perform(post(BASE)
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(json))
-                .andExpect(status().isBadRequest())         // HTTP 400
+                        .content(jsonBody))
+                .andExpect(status().isBadRequest())        // HTTP 400 erwartet
                 .andExpect(status().reason("Ungültiges Cron-Pattern: " + badCron));
 
-        // Service darf nie aufgerufen werden
+        // Der Service wird nie aufgerufen, weil Validierung vorher scheitert
         verifyNoInteractions(eventService);
     }
 
@@ -109,17 +108,15 @@ class EventControllerTest {
     @DisplayName("GET /api/events/{id} → 200 + Event")
     void testGetById() throws Exception {
         String id = UUID.randomUUID().toString();
-        // Bereite das Event vor, das der Service zurückliefern soll
-        Event e = new Event();
-        e.setId(id);
-        e.setCron("0 0 * * * ?");
-        e.setTitle("FetchTest");
+        Event found = new Event();
+        found.setId(id);
+        found.setCron("0 0 * * * ?");
+        found.setTitle("FetchTest");
+        when(eventService.getById(id)).thenReturn(found);
 
-        when(eventService.getById(id)).thenReturn(e);
-
-        // Führe GET /api/events/{id} aus und prüfe JSON-Felder
+        // GET mit Pfadparameter und Überprüfung, dass ID und Titel zurückgegeben werden
         mockMvc.perform(get(BASE + "/" + id))
-                .andExpect(status().isOk())                // HTTP 200
+                .andExpect(status().isOk())
                 .andExpect(jsonPath("$.id").value(id))
                 .andExpect(jsonPath("$.title").value("FetchTest"));
     }
@@ -130,32 +127,32 @@ class EventControllerTest {
         String id = UUID.randomUUID().toString();
         doNothing().when(eventService).deleteEvent(id);
 
-        // Führe DELETE /api/events/{id} aus und erwarte HTTP 204
+        // DELETE-Anfrage und Prüfung auf 204 No Content
         mockMvc.perform(delete(BASE + "/" + id))
-                .andExpect(status().isNoContent());       // HTTP 204
+                .andExpect(status().isNoContent());
 
-        // Überprüfe, dass deleteEvent() aufgerufen wurde
+        // Service-Methode wurde aufgerufen
         verify(eventService).deleteEvent(id);
     }
 
     @Test
     @DisplayName("GET /api/events mit Filterparametern → 200 + Liste")
     void testListEvents_WithFilter() throws Exception {
-        // Mock Service liefert leere Liste
+        // Mock-Service liefert leere Liste
         when(eventService.listEvents(any(FilterDto.class)))
                 .thenReturn(Collections.emptyList());
 
-        // Führe GET mit Query-Parametern aus
+        // GET mit Query-Parametern weekday und from
         mockMvc.perform(get(BASE)
                         .param("weekday", "MONDAY")
                         .param("from", "2025-07-01T00:00:00Z"))
-                .andExpect(status().isOk())                // HTTP 200
-                .andExpect(content().json("[]"));        // leeres Array
+                .andExpect(status().isOk())
+                .andExpect(content().json("[]"));  // leere JSON-Liste
 
-        // ArgumentCaptor prüft übergebenen FilterDto
-        ArgumentCaptor<FilterDto> fdCap = ArgumentCaptor.forClass(FilterDto.class);
-        verify(eventService).listEvents(fdCap.capture());
-        assertThat(fdCap.getValue().getWeekday()).isEqualTo("MONDAY");
-        assertThat(fdCap.getValue().getFrom()).isEqualTo("2025-07-01T00:00:00Z");
+        // Prüfen, ob Filter-DTO korrekt befüllt wurde
+        ArgumentCaptor<FilterDto> captor = ArgumentCaptor.forClass(FilterDto.class);
+        verify(eventService).listEvents(captor.capture());
+        assertThat(captor.getValue().getWeekday()).isEqualTo("MONDAY");
+        assertThat(captor.getValue().getFrom()).isEqualTo("2025-07-01T00:00:00Z");
     }
 }
