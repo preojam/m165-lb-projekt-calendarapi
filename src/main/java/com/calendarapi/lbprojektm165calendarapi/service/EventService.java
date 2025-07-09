@@ -1,8 +1,8 @@
 package com.calendarapi.lbprojektm165calendarapi.service;
 
 import com.calendarapi.lbprojektm165calendarapi.model.Event;
-import com.calendarapi.lbprojektm165calendarapi.repository.EventRepository;
 import com.calendarapi.lbprojektm165calendarapi.dto.FilterDto;
+import com.calendarapi.lbprojektm165calendarapi.repository.EventRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -25,7 +25,7 @@ public class EventService {
 
     /** Updated ein bestehendes Event */
     public Event updateEvent(Event event) {
-        // Optional: prüfen, ob das Event existiert:
+        // Optional: prüfen, ob das Event existiert
         // repository.findById(event.getId()).orElseThrow(...)
         return repository.save(event);
     }
@@ -38,15 +38,18 @@ public class EventService {
     /** Liest ein einzelnes Event */
     public Event getById(String id) {
         return repository.findById(id)
-                .orElseThrow(() -> new IllegalArgumentException("Event nicht gefunden: " + id));
+                .orElseThrow(() ->
+                        new IllegalArgumentException("Event nicht gefunden: " + id)
+                );
     }
 
+    /** Listet Events basierend auf dem übergebenen Filter (z. B. Datum, Wochentag, Tag, Titel etc.) */
     public List<Event> listEvents(FilterDto filter) {
         return repository.findByFilters(filter);
     }
 
-    /** Speichert eine Liste von Event-Objekten in der MongoDB-Datenbank*/
+    /** Speichert mehrere Events auf einmal (z. B. über /api/events/batch) */
     public List<Event> saveAll(List<Event> events) {
-        return repository.saveAll(events); //gibt die gespeicherten Daten zurück (inkl. IDs)
+        return repository.saveAll(events);
     }
 }

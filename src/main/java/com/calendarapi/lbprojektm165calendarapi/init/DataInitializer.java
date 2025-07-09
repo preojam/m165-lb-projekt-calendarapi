@@ -1,6 +1,5 @@
 package com.calendarapi.lbprojektm165calendarapi.init;
 
-
 import com.calendarapi.lbprojektm165calendarapi.model.Event;
 import com.calendarapi.lbprojektm165calendarapi.repository.EventRepository;
 import org.springframework.boot.CommandLineRunner;
@@ -12,12 +11,14 @@ import java.time.Instant;
 import java.util.List;
 
 @Configuration
+@Profile("dev")
 public class DataInitializer {
 
     @Bean
-    CommandLineRunner initData(EventRepository eventRepo) {
-        System.out.println("**********************************************************");
+    @Profile("dev")
+    public CommandLineRunner initData(EventRepository eventRepo) {
         return args -> {
+            // Zuerst alle vorhandenen Events löschen
             eventRepo.deleteAll();
 
             // 1) Sprint Planning
@@ -92,12 +93,17 @@ public class DataInitializer {
             webinar.setDayOfMonth(20);
             webinar.setMonths(List.of(2,5,8,11));
 
-            // Speichern der Beispiel-Daten
-            eventRepo.saveAll(List.of(sprint, retro));
-            System.out.println("Seeded Event collection with example data.");
+            // Alle sechs Beispiel-Events speichern
+            eventRepo.saveAll(List.of(
+                    sprint,
+                    retro,
+                    marketing,
+                    devops,
+                    budget,
+                    webinar
+            ));
 
-
+            System.out.println("Seeded Event collection with example Events.");
         };
-
     }
 }
