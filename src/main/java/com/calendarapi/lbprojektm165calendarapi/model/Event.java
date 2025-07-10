@@ -8,6 +8,9 @@ import org.springframework.data.mongodb.core.mapping.Document;
 import java.time.Instant;
 import java.util.List;
 
+/**
+ * Repräsentiert ein Event-Dokument in der MongoDB-Collection "events".
+ */
 @Document(collection = "events")
 @Data
 @Builder
@@ -17,18 +20,20 @@ public class Event {
 
     @Id
     private String id;
+
     private String title;
     private String description;
     private Instant start;
     private Instant end;
-    private String cron;               // für das Cron-Pattern
-    private List<String> tags;         // für Tags
-    private List<String> daysOfWeek;   // für Filter
-    private Integer dayOfMonth;
-    private List<Integer> months;
+    private String cron;                  // für das Cron-Pattern
+    private List<String> tags;           // für Tags
+    private List<String> daysOfWeek;     // für Filter
+    private Integer dayOfMonth;          // fester Tag im Monat
+    private List<Integer> months;        // Liste von Monaten (z. B. [1, 6, 12])
 
-
-    // Vollständiger Konstruktor
+    /**
+     * Vollständiger Konstruktor der Event-Klasse, um alle Attribute zu initialisieren.
+     */
     public Event(String title, String description,
                  Instant start, Instant end,
                  String cron,
@@ -46,6 +51,8 @@ public class Event {
         this.dayOfMonth = dayOfMonth;
         this.months = months;
     }
+
+    // Getter & Setter
 
     public String getId() {
         return id;
