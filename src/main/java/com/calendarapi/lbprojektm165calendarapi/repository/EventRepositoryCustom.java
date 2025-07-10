@@ -3,23 +3,35 @@ package com.calendarapi.lbprojektm165calendarapi.repository;
 import com.calendarapi.lbprojektm165calendarapi.dto.FilterDto;
 import com.calendarapi.lbprojektm165calendarapi.model.Event;
 
-import java.time.Instant;
 import java.util.List;
 
 /**
  * Benutzerdefinierte Repository-Schnittstelle für komplexe Event-Abfragen.
- * Diese wird verwendet, wenn Abfragen über einfache Methoden wie findById() hinausgehen.
  *
- * Wird typischerweise in einer eigenen Implementierungsklasse umgesetzt, z. B. EventRepositoryImpl.
+ * <p>Diese Schnittstelle wird verwendet, wenn die Anforderungen über einfache CRUD-Methoden
+ * (wie {@code findById()}, {@code findAll()} usw.) hinausgehen, z.B. bei dynamischen Filtern.</p>
+ *
+ * <p>Die tatsächliche Implementierung erfolgt in {@code EventRepositoryImpl}.</p>
+ *
+ * @author Ricardo Cardoso
  */
 public interface EventRepositoryCustom {
 
     /**
-     * Findet Events basierend auf verschiedenen Filterkriterien.
-     * Die Filter werden in einem {@link FilterDto} übergeben.
+     * Findet {@link Event}-Objekte basierend auf den übergebenen Filterkriterien.
      *
-     * @param filter Ein Objekt mit den gewünschten Filterkriterien (Wochentag, Monat, Zeit, Titel usw.)
-     * @return Liste von Events, die den Kriterien entsprechen
+     * <p>Beispiele für Filter:
+     * <ul>
+     *     <li>Wochentage (z.B. "Monday", "Tuesday")</li>
+     *     <li>Monate (z.B. "January", "February")</li>
+     *     <li>Datumsspanne (Start- und Endzeitpunkt)</li>
+     *     <li>Tags (z.B. "work", "birthday")</li>
+     *     <li>Titel-Suchbegriff (case-insensitive)</li>
+     * </ul>
+     * </p>
+     *
+     * @param filter ein {@link FilterDto}-Objekt mit allen gewünschten Filterparametern
+     * @return Liste von {@link Event}-Objekten, die den angegebenen Kriterien entsprechen
      */
-    List<Event> findByFilters(FilterDto filter); // Methode zur dynamischen Abfrage auf Basis von Filterwerten
+    List<Event> findByFilters(FilterDto filter);
 }
