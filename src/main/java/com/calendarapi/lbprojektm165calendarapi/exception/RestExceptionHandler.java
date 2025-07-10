@@ -11,11 +11,25 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
- * Zentrale Exception-Handler-Klasse für REST-Controller.
+ * Zentrale Exception-Handler-Klasse für alle REST-Controller der Calendar-API.
  * <p>
- * Fängt verschiedene Ausnahmen ab und wandelt sie in
- * geeignete HTTP-Antworten mit Statuscodes und Fehlermeldungen um.
+ * Fängt verschiedene Exceptions ab und übersetzt sie in
+ * HTTP-Antworten mit passenden Statuscodes und Fehlermeldungen.
  * </p>
+ *
+ * <p>
+ * Unterstützte Szenarien:
+ * <ul>
+ *   <li>Validierungsfehler auf DTOs (@Valid)</li>
+ *   <li>IllegalArgumentException für ungültige Methodenargumente</li>
+ *   <li>InvalidCronException bei fehlerhaften Cron-Ausdrücken</li>
+ *   <li>EventNotFoundException, wenn ein Event nicht existiert</li>
+ * </ul>
+ * </p>
+ *
+ * @author Preo
+ * @version 1.0
+ * @since 1.0
  */
 @ControllerAdvice
 public class RestExceptionHandler {

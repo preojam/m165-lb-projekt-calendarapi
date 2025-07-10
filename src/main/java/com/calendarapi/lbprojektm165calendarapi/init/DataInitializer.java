@@ -14,19 +14,24 @@ import java.util.List;
  * Initialisiert beim Start der Anwendung im "dev"-Profil Beispiel-Daten.
  * <p>
  * Löscht vorhandene Events und legt sechs vordefinierte Event-Objekte an.
- * Diese Daten dienen als Seed für die Calendar-API.
+ * Diese Daten dienen als Seed für die Calendar-API und erleichtern das Testen
+ * und Entwickeln ohne manuelle Datenerstellung.
  * </p>
+ *
+ * @author Preo
+ * @version 1.0
+ * @since 1.0
  */
 @Configuration
 @Profile("dev")
 public class DataInitializer {
 
     /**
-     * Gibt einen {@link CommandLineRunner} zurück, der beim Anwendungstart
+     * Gibt einen {@link CommandLineRunner} zurück, der beim Anwendungsstart
      * im "dev"-Profil die Event-Datenbank zurücksetzt und mit Beispieldaten füllt.
      *
      * @param eventRepo das Repository, in dem die Beispiel-Events gespeichert werden
-     * @return ein CommandLineRunner, der die Seed-Daten beim Start einfügt
+     * @return ein {@link CommandLineRunner}, der die Seed-Daten beim Start einfügt
      */
     @Bean
     @Profile("dev")
