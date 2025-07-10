@@ -20,25 +20,8 @@ Dieses Repository enthält eine Spring Boot Anwendung zur Verwaltung von Kalende
 
 ## 📁 Projektstruktur
 
-├── src
-│ ├── main
-│ │ └── java/com/calendarapi/lbprojektm165calendarapi/
-│ │ ├── controller/ // REST-Endpoints
-│ │ ├── dto/ // FilterDto, Transferobjekte
-│ │ ├── model/ // Event.java
-│ │ ├── repository/ // Custom MongoDB Query-Repo
-│ │ ├── service/ // EventService
-│ │ ├── exception/ // Custom Exceptions + Handler
-│ │ └── validation/ // Cron-Validator
-│ └── test/
-│ └── ... // Unit- und Integrationstests
-├── mongo-init.js
-├── Dockerfile
-├── docker-compose.yml
-├── backup.sh / restore.sh
-├── insomnia/
-├── README.md
-└── pom.xml
+<img width="464" height="588" alt="image" src="https://github.com/user-attachments/assets/13d8de66-442d-442a-ad94-6474ef8869ea" />
+
 
 ---
 
