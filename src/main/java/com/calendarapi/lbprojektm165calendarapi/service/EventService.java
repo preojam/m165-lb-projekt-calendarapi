@@ -43,12 +43,15 @@ public class EventService {
                 );
     }
 
-    /** Listet Events basierend auf dem übergebenen Filter */
+    /** Listet Events basierend auf dem übergebenen Filter (Datum, Wochentag, Tag, Titel etc.) */
+
+
     public List<Event> listEvents(FilterDto filter) {
         return repository.findByFilters(filter);
     }
 
-    /** Speichert mehrere Events auf einmal  */
+    /** Speichert mehrere Events auf einmal (über /api/events/batch) */
+  
     public List<Event> saveAll(List<Event> events) {
         return repository.saveAll(events);
     }
