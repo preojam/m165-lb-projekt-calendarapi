@@ -62,7 +62,7 @@ public class FilterDto {
     /**
      * Setzt den Startzeitpunkt (Zeitstempel im ISO 8601-Format).
      *
-     * @param fromIso z. B. "2025-07-10T08:00:00Z"
+     * @param fromIso z.B. "2025-07-10T08:00:00Z"
      */
     public void setFrom(String fromIso) {
         try {
