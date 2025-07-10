@@ -30,12 +30,12 @@ public class EventRepositoryImpl implements EventRepositoryCustom {
     public List<Event> findByFilters(FilterDto filter) {
         Query query = new Query(); // Startet leere Query, Kriterien werden dynamisch hinzugefügt
 
-        // Filter nach Wochentagen (z. B. ["Monday", "Tuesday"])
+        // Filter nach Wochentagen (["Monday", "Tuesday"])
         if (filter.getWeekday() != null && !filter.getWeekday().isEmpty()) {
             query.addCriteria(Criteria.where("weekday").in(filter.getWeekday()));
         }
 
-        // Filter nach Monaten (z. B. ["January", "February"])
+        // Filter nach Monaten (["January", "February"])
         if (filter.getMonth() != null && !filter.getMonth().isEmpty()) {
             query.addCriteria(Criteria.where("month").in(filter.getMonth()));
         }
@@ -49,7 +49,7 @@ public class EventRepositoryImpl implements EventRepositoryCustom {
             query.addCriteria(Criteria.where("startTime").lte(filter.getTo()));
         }
 
-        // Filter nach einem spezifischen Tag (z. B. "work", "birthday")
+        // Filter nach einem spezifischen Tag ("work", "birthday")
         if (filter.getTag() != null && !filter.getTag().isBlank()) {
             query.addCriteria(Criteria.where("tag").is(filter.getTag()));
         }
