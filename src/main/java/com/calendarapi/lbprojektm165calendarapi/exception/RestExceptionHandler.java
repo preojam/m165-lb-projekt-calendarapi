@@ -21,7 +21,7 @@ import java.util.Map;
 public class RestExceptionHandler {
 
     /**
-     * Behandelt Validierungsfehler (z. B. bei @Valid in DTOs).
+     * Behandelt Validierungsfehler (bei @Valid in DTOs).
      *
      * @param ex die MethodArgumentNotValidException mit allen Validierungsfehlern
      * @return ResponseEntity mit einer Map von Feldnamen zu Fehlermeldungen und HTTP 400
