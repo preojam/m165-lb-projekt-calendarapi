@@ -42,13 +42,10 @@ public class EventRepositoryImpl implements EventRepositoryCustom {
 
         // Filter nach Zeitraum: von - bis (bezieht sich auf "startTime")
         if (filter.getFrom() != null && filter.getTo() != null) {
-            // Wenn sowohl "von" als auch "bis" gesetzt sind
             query.addCriteria(Criteria.where("startTime").gte(filter.getFrom()).lte(filter.getTo()));
         } else if (filter.getFrom() != null) {
-            // Nur "von" ist gesetzt
             query.addCriteria(Criteria.where("startTime").gte(filter.getFrom()));
         } else if (filter.getTo() != null) {
-            // Nur "bis" ist gesetzt
             query.addCriteria(Criteria.where("startTime").lte(filter.getTo()));
         }
 
@@ -65,27 +62,27 @@ public class EventRepositoryImpl implements EventRepositoryCustom {
             );
         }
 
-        // Erstellt ein leeres Mongo-Query-Filterobjekt (Criteria aus org.springframework.data.mongodb.core.query)
+        // Datumskriterien für Start- und Endzeitpunkt
         Criteria c = new Criteria();
 
-        // Wenn ein Startdatum im Filter gesetzt ist
         if (filter.getDateFrom() != null) {
             Instant from = filter.getDateFrom()
-                    .atStartOfDay(ZoneOffset.UTC) // Beginn des Tages, z. B. 2025-08-01T00:00Z (UTC)
-                    .toInstant(); // Umwandlung in Instant (für Vergleich mit Event-Startzeit)
-            c = c.and("start").gte(from); // Filter: Events, die am/vor oder nach diesem Zeitpunkt starten
+                    .atStartOfDay(ZoneOffset.UTC)
+                    .toInstant();
+            c = c.and("start").gte(from);
         }
 
-        // Wenn ein Enddatum im Filter gesetzt ist
         if (filter.getDateTo() != null) {
             Instant to = filter.getDateTo()
-                    .plusDays(1) // Einen Tag hinzufügen, um den kompletten Endtag abzudecken
-                    .atStartOfDay(ZoneOffset.UTC) // 00:00 Uhr des nächsten Tages (UTC)
-                    .toInstant(); // Umwandlung in Instant (für Vergleich mit Event-Endzeit)
-            c = c.and("end").lte(to); // Filter: Events, die am/vor diesem Zeitpunkt enden
+                    .plusDays(1)
+                    .atStartOfDay(ZoneOffset.UTC)
+                    .toInstant();
+            c = c.and("end").lte(to);
         }
 
-        // Führt die Abfrage aus und gibt eine Liste passender Events zurück
+        // Anmerkung: `c` wird derzeit nicht zur Query hinzugefügt
+        // Falls gewünscht: query.addCriteria(c);
+
         return mongoTemplate.find(query, Event.class);
     }
 }

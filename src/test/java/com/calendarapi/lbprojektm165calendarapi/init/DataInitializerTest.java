@@ -15,6 +15,17 @@ import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+/**
+ * Testklasse für die {@code DataInitializer}-Konfiguration im "dev"-Profil.
+ * <p>
+ * Stellt sicher, dass der CommandLineRunner zum Initialisieren der Beispieldaten
+ * korrekt ausgeführt wird und erwartetes Verhalten zeigt:
+ * </p>
+ * <ul>
+ *   <li>Daten werden einmalig und idempotent angelegt.</li>
+ *   <li>Die korrekte Anzahl und Inhalt der Events ist gewährleistet.</li>
+ * </ul>
+ */
 @SpringBootTest
 @ActiveProfiles("dev")
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
@@ -26,14 +37,24 @@ public class DataInitializerTest {
     @Autowired
     private ApplicationContext ctx;
 
+    /**
+     * Löscht alle vorhandenen Events und startet den DataInitializer-Runner,
+     * um die Seed-Daten einmalig vor allen Tests zu erzeugen.
+     *
+     * @throws Exception wenn das Ausführen des CommandLineRunner fehlschlägt
+     */
     @BeforeAll
     void setupAndSeed() throws Exception {
-        // Vor allen Tests einmal löschen und Seeder ausführen
+        // Vor allen Tests einmal löschen
         eventRepo.deleteAll();
+        // Runner aus dem Kontext holen und ausführen
         CommandLineRunner runner = ctx.getBean("initData", CommandLineRunner.class);
         runner.run();
     }
 
+    /**
+     * Verifiziert, dass nach dem Initialisieren genau sechs Events in der Datenbank vorhanden sind.
+     */
     @Test
     void testDataIsInitialized() {
         // Nach dem ersten Seed müssen 6 Events da sein
@@ -41,10 +62,14 @@ public class DataInitializerTest {
         assertThat(all).hasSize(6);
     }
 
+    /**
+     * Prüft, dass die Titel der erzeugten Events den sechs erwarteten Werten entsprechen.
+     */
     @Test
     void testContentOfSeededEvents() {
-        // Prüfe, dass alle sechs erwarteten Titel vorhanden sind
+        // Alle Events abrufen
         List<Event> all = eventRepo.findAll();
+        // Titel extrahieren und vergleichen
         assertThat(all)
                 .extracting(Event::getTitle)
                 .containsExactlyInAnyOrder(
@@ -57,13 +82,19 @@ public class DataInitializerTest {
                 );
     }
 
+    /**
+     * Stellt die Idempotenz des Initializers sicher, indem er
+     * mehrfach ausgeführt wird und weiterhin genau sechs Events bestehen bleiben.
+     *
+     * @throws Exception wenn das erneute Ausführen des CommandLineRunner fehlschlägt
+     */
     @Test
     void testIdempotenceOfInitializer() throws Exception {
-        // Führt den Runner ein zweites und drittes Mal aus
+        // Runner erneut holen und zwei Mal ausführen
         CommandLineRunner runner = ctx.getBean("initData", CommandLineRunner.class);
         runner.run();
         runner.run();
-        // Da seeder deleteAll() + saveAll(6), bleibt es immer bei 6
+        // Es bleibt bei 6 Events
         assertThat(eventRepo.findAll()).hasSize(6);
     }
 }
