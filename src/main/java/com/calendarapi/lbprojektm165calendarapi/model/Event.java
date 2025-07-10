@@ -15,28 +15,18 @@ import java.util.List;
 @AllArgsConstructor
 public class Event {
 
-    // Getter & Setter für id
     @Id
     private String id;
-
-    // Getter & Setter für title
     private String title;
-    // Getter & Setter für description
     private String description;
-    // Getter & Setter für start
     private Instant start;
-    // Getter & Setter für end
     private Instant end;
-    // Getter & Setter für cron
     private String cron;               // für das Cron-Pattern
-    // Getter & Setter für tags
     private List<String> tags;         // für Tags
-    // Getter & Setter für daysOfWeek
     private List<String> daysOfWeek;   // für Filter
-    // Getter & Setter für dayOfMonth
     private Integer dayOfMonth;
-    // Getter & Setter für months
     private List<Integer> months;
+
 
     // Vollständiger Konstruktor
     public Event(String title, String description,

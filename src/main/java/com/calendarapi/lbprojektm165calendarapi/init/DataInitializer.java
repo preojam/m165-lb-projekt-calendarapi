@@ -10,10 +10,24 @@ import org.springframework.context.annotation.Profile;
 import java.time.Instant;
 import java.util.List;
 
+/**
+ * Initialisiert beim Start der Anwendung im "dev"-Profil Beispiel-Daten.
+ * <p>
+ * Löscht vorhandene Events und legt sechs vordefinierte Event-Objekte an.
+ * Diese Daten dienen als Seed für die Calendar-API.
+ * </p>
+ */
 @Configuration
 @Profile("dev")
 public class DataInitializer {
 
+    /**
+     * Gibt einen {@link CommandLineRunner} zurück, der beim Anwendungstart
+     * im "dev"-Profil die Event-Datenbank zurücksetzt und mit Beispieldaten füllt.
+     *
+     * @param eventRepo das Repository, in dem die Beispiel-Events gespeichert werden
+     * @return ein CommandLineRunner, der die Seed-Daten beim Start einfügt
+     */
     @Bean
     @Profile("dev")
     public CommandLineRunner initData(EventRepository eventRepo) {
@@ -23,14 +37,24 @@ public class DataInitializer {
 
             // 1) Sprint Planning
             Event sprint = new Event();
+            // Titel des Events: Name der Aktivität
             sprint.setTitle("Sprint Planning");
+            // Beschreibung: Zweck und Inhalt des Meetings
             sprint.setDescription("Planung des nächsten Sprints");
+            // Startzeitpunkt in UTC (ISO-Format) z = zulu time utc
             sprint.setStart(Instant.parse("2025-07-01T09:00:00Z"));
+            // Endzeitpunkt in UTC
             sprint.setEnd(Instant.parse("2025-07-01T10:00:00Z"));
+            // Cron-Expression: "0 0 9 ? * MON#1"
+            // Führt das Event am ersten Montag jedes Monats um 09:00 Uhr aus
             sprint.setCron("0 0 9 ? * MON#1");
+            // Tags: Kategorien zur Gruppierung des Events
             sprint.setTags(List.of("Agile", "Team"));
+            // Wochentage: Hier MON für Montag
             sprint.setDaysOfWeek(List.of("MON"));
+            // Tag des Monats: 1 (relevant für manche Cron-Patterns)
             sprint.setDayOfMonth(1);
+            // Monate: 1–12 = Januar bis Dezember
             sprint.setMonths(List.of(1,2,3,4,5,6,7,8,9,10,11,12));
 
             // 2) Team Retro
