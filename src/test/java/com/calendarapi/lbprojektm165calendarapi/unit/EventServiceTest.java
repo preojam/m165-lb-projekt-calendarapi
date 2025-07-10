@@ -1,7 +1,6 @@
-package com.calendarapi.lbprojektm165calendarapi.calendarapitests.unit;
+package com.calendarapi.lbprojektm165calendarapi.unit;
 
 import com.calendarapi.lbprojektm165calendarapi.dto.FilterDto;
-import com.calendarapi.lbprojektm165calendarapi.model.Event;
 import com.calendarapi.lbprojektm165calendarapi.repository.EventRepository;
 import com.calendarapi.lbprojektm165calendarapi.service.EventService;
 import org.junit.jupiter.api.Test;
