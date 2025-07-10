@@ -74,32 +74,32 @@ GET /api/events?from=2025-07-01T08:00:00Z&to=2025-07-31T18:00:00Z&weekday=MONDAY
 ---
 
 ### MongoDB-Filterbefehle
-// 1. Einloggen in die Shell (wenn du per Docker-Port verbindest):
+ 1. Einloggen in die Shell (wenn du per Docker-Port verbindest):
 mongosh "mongodb://localhost:27018/calendar_db" ODER docker exec -it calendarapi-mongo mongosh     
-// 2. Auf die richtige Datenbank wechseln
+ 2. Auf die richtige Datenbank wechseln
 use calendar_db
-// 3a. ALLE Events löschen (Collection bleibt leer, Indexe bleiben erhalten)
+ 3a. ALLE Events löschen (Collection bleibt leer, Indexe bleiben erhalten)
 db.events.deleteMany({})
-// 3b. Nur Events vor einem bestimmten Datum löschen, z.B. alle, die vor dem 1. Juli 2025 enden:
+ 3b. Nur Events vor einem bestimmten Datum löschen, z.B. alle, die vor dem 1. Juli 2025 enden:
 db.events.deleteMany({ end: { $lt: ISODate("2025-07-01T00:00:00Z") } })
-// 3c. Einzelne Events nach Titel filtern und löschen:
+ 3c. Einzelne Events nach Titel filtern und löschen:
 db.events.deleteOne({ title: "Sprint Planning" })
-// 4. Wenn du die gesamte Collection komplett entfernen willst (inkl. Indexen):
+ 4. Wenn du die gesamte Collection komplett entfernen willst (inkl. Indexen):
 db.events.drop()
-// 5. Zur Kontrolle die Anzahl der verbliebenen Dokumente abfragen:
-db.events.countDocuments({})   // oder db.events.count()
-// Suche nach Events mit dem Wochentag "MONDAY"
+ 5. Zur Kontrolle die Anzahl der verbliebenen Dokumente abfragen:
+db.events.countDocuments({})    oder db.events.count()
+ Suche nach Events mit dem Wochentag "MONDAY"
 
 db.events.find({
   daysOfWeek: { $in: ["MONDAY"] }
 })
 
-// Suche nach Events in den Monaten Januar, März und Mai
+## Suche nach Events in den Monaten Januar, März und Mai
 db.events.find({
   months: { $in: [1, 3, 5] }
 })
 
-// Events zwischen zwei Zeitpunkten (Startzeit)
+## Events zwischen zwei Zeitpunkten (Startzeit)
 db.events.find({
   start: {
     $gte: ISODate("2025-07-01T08:00:00Z"),
@@ -107,12 +107,12 @@ db.events.find({
   }
 })
 
-// Suche nach Events mit dem Tag "Feiertag"
+## Suche nach Events mit dem Tag "Feiertag"
 db.events.find({
   tags: "Feiertag"
 })
 
-// Titel enthält das Wort "Sprint", case-insensitive
+## Titel enthält das Wort "Sprint", case-insensitive
 db.events.find({
   title: {
     $regex: ".*Sprint.*",
@@ -120,21 +120,21 @@ db.events.find({
   }
 })
 
-// Startdatum ab dem 1. August 2025
+## Startdatum ab dem 1. August 2025
 db.events.find({
   start: {
     $gte: ISODate("2025-08-01T00:00:00Z")
   }
 })
 
-// Enddatum bis einschließlich 31. August 2025
+## Enddatum bis einschließlich 31. August 2025
 db.events.find({
   end: {
     $lte: ISODate("2025-08-31T23:59:59Z")
   }
 })
 
-//kombinierte Befehle
+##kombinierte Befehle
 db.events.find({
   daysOfWeek: { $in: ["MONDAY"] },
   tags: "Arbeit",
