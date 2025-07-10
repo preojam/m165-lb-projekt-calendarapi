@@ -18,7 +18,10 @@ import java.util.regex.Pattern;
  * <p>Diese Klasse definiert die dynamische Filterlogik zur Suche nach Events basierend
  * auf verschiedenen Kriterien wie Titel, Zeiträumen, Wochentagen, Monaten und Tags.</p>
  *
+ * <p>Wird automatisch durch Spring verwendet, wenn {@link EventRepositoryCustom} implementiert wird.</p>
+ *
  * @author Ricardo Cardoso
+ * @since 1.0
  */
 public class EventRepositoryImpl implements EventRepositoryCustom {
 

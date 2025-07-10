@@ -17,7 +17,6 @@ import java.util.Map;
  * HTTP-Antworten mit passenden Statuscodes und Fehlermeldungen.
  * </p>
  *
- * <p>
  * Unterstützte Szenarien:
  * <ul>
  *   <li>Validierungsfehler auf DTOs (@Valid)</li>
@@ -25,7 +24,6 @@ import java.util.Map;
  *   <li>InvalidCronException bei fehlerhaften Cron-Ausdrücken</li>
  *   <li>EventNotFoundException, wenn ein Event nicht existiert</li>
  * </ul>
- * </p>
  *
  * @author Preo
  * @version 1.0
