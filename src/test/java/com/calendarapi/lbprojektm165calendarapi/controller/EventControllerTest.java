@@ -21,20 +21,26 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 /**
- * Unit-Tests für den {@link com.calendarapi.lbprojektm165calendarapi.controller.EventController},
- * ausgeführt mit Spring’s {@code MockMvc}, um REST-Endpunkte zu validieren.
+ * Unit-Tests für den {@link EventController} mit Spring's {@link MockMvc}.
+ * <p>
+ * Validiert die REST-Endpunkte: Hello, Create, Fetch, Delete und Listing mit Filtern.
+ * </p>
+ *
+ * @author Preo
+ * @version 1.0
+ * @since 1.0
  */
 @WebMvcTest(EventController.class)
-class EventControllerTest {
+public class EventControllerTest {
 
     /**
-     * {@link MockMvc} für HTTP-Requests an den Controller.
+     * MockMvc für HTTP-Requests an den Controller.
      */
     @Autowired
     private MockMvc mockMvc;
 
     /**
-     * Mock des {@link EventService}, um Datenbankaufrufe zu simulieren.
+     * Mock des {@link EventService}, um Service-Aufrufe zu simulieren.
      */
     @MockitoBean
     private EventService eventService;
@@ -47,7 +53,7 @@ class EventControllerTest {
     /**
      * Testet den einfachen Hello-Endpoint.
      *
-     * @throws Exception wenn der Mock-Request fehlschlägt
+     * @throws Exception falls der Mock-Request fehlschlägt
      */
     @Test
     @DisplayName("GET /api/events/hello → Hello World!")
@@ -60,10 +66,9 @@ class EventControllerTest {
 
     /**
      * Testet das Erstellen eines Events mit gültigem Cron-Pattern.
-     * Verifiziert, dass der Service korrekt aufgerufen wird und
-     * die Response das erwartete Event enthält.
+     * Verifiziert, dass der Service korrekt aufgerufen wird und die Response das erwartete Event enthält.
      *
-     * @throws Exception wenn der Mock-Request fehlschlägt
+     * @throws Exception falls der Mock-Request fehlschlägt
      */
     @Test
     @DisplayName("POST /api/events mit gültigem Cron → 200 + zurückgegebenes Event")
@@ -107,7 +112,7 @@ class EventControllerTest {
      * Testet das Erstellen eines Events mit ungültigem Cron-Pattern.
      * Erwartet HTTP 400 und prüft, dass der Service nicht aufgerufen wird.
      *
-     * @throws Exception wenn der Mock-Request fehlschlägt
+     * @throws Exception falls der Mock-Request fehlschlägt
      */
     @Test
     @DisplayName("POST /api/events mit ungültigem Cron → 400 Bad Request")
@@ -136,7 +141,7 @@ class EventControllerTest {
      * Testet das Abrufen eines Events nach ID.
      * Erwartet HTTP 200 und das korrekte Event im Response-Body.
      *
-     * @throws Exception wenn der Mock-Request fehlschlägt
+     * @throws Exception falls der Mock-Request fehlschlägt
      */
     @Test
     @DisplayName("GET /api/events/{id} → 200 + Event")
@@ -160,7 +165,7 @@ class EventControllerTest {
      * Testet das Löschen eines Events nach ID.
      * Erwartet HTTP 204 und verifiziert den Service-Aufruf.
      *
-     * @throws Exception wenn der Mock-Request fehlschlägt
+     * @throws Exception falls der Mock-Request fehlschlägt
      */
     @Test
     @DisplayName("DELETE /api/events/{id} → 204 No Content")
@@ -181,7 +186,7 @@ class EventControllerTest {
      * Testet die Auflistung von Events mit Filterparametern.
      * Erwartet HTTP 200 und eine leere Liste, wenn keine Events gefunden wurden.
      *
-     * @throws Exception wenn der Mock-Request fehlschlägt
+     * @throws Exception falls der Mock-Request fehlschlägt
      */
     @Test
     @DisplayName("GET /api/events mit Filterparametern → 200 + leere Liste")

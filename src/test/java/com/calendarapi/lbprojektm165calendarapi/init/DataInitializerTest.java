@@ -18,22 +18,39 @@ import static org.assertj.core.api.Assertions.assertThat;
 /**
  * Testklasse für die {@code DataInitializer}-Konfiguration im "dev"-Profil.
  * <p>
- * Stellt sicher, dass der CommandLineRunner zum Initialisieren der Beispieldaten
- * korrekt ausgeführt wird und erwartetes Verhalten zeigt:
+ * Stellt sicher, dass der {@link CommandLineRunner} zum Initialisieren der
+ * Beispieldaten korrekt ausgeführt wird und erwartetes Verhalten zeigt:
  * </p>
  * <ul>
  *   <li>Daten werden einmalig und idempotent angelegt.</li>
- *   <li>Die korrekte Anzahl und Inhalt der Events ist gewährleistet.</li>
+ *   <li>Die korrekte Anzahl und der Inhalt der Events ist gewährleistet.</li>
  * </ul>
+ *
+ * @author Preo
+ * @version 1.0
+ * @since 1.0
  */
 @SpringBootTest
 @ActiveProfiles("dev")
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 public class DataInitializerTest {
 
+    /**
+     * Standard-Konstruktor für Javadoc-Dokumentation.
+     */
+    public DataInitializerTest() {
+        // Default constructor
+    }
+
+    /**
+     * Spring Data Repository für Events, um Seed-Daten zu prüfen.
+     */
     @Autowired
     private EventRepository eventRepo;
 
+    /**
+     * ApplicationContext, um den {@link CommandLineRunner}-Bean zu laden.
+     */
     @Autowired
     private ApplicationContext ctx;
 
@@ -41,7 +58,7 @@ public class DataInitializerTest {
      * Löscht alle vorhandenen Events und startet den DataInitializer-Runner,
      * um die Seed-Daten einmalig vor allen Tests zu erzeugen.
      *
-     * @throws Exception wenn das Ausführen des CommandLineRunner fehlschlägt
+     * @throws Exception wenn das Ausführen des {@link CommandLineRunner} fehlschlägt
      */
     @BeforeAll
     void setupAndSeed() throws Exception {
@@ -83,10 +100,10 @@ public class DataInitializerTest {
     }
 
     /**
-     * Stellt die Idempotenz des Initializers sicher, indem er
-     * mehrfach ausgeführt wird und weiterhin genau sechs Events bestehen bleiben.
+     * Stellt die Idempotenz des Initializers sicher, indem er mehrfach ausgeführt wird
+     * und weiterhin genau sechs Events bestehen bleiben.
      *
-     * @throws Exception wenn das erneute Ausführen des CommandLineRunner fehlschlägt
+     * @throws Exception wenn das erneute Ausführen des {@link CommandLineRunner} fehlschlägt
      */
     @Test
     void testIdempotenceOfInitializer() throws Exception {
