@@ -11,19 +11,26 @@ import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
-import java.time.Instant;
 import java.util.List;
 
 import static com.cronutils.model.CronType.QUARTZ; // spring hat 6 stellig und quartz 7 stellig **900?
 
+/**
+ * REST-Controller für die Verwaltung von Events.
+ * Bietet HTTP-Endpunkte zum Erstellen, Bearbeiten, Löschen und Filtern von Kalenderereignissen.
+ */
 @RestController
 @RequestMapping("/api/events")
-public class
-EventController {
+public class EventController {
 
-    private final EventService eventService;
-    private final CronParser cronParser;
+    private final EventService eventService; // Service-Klasse zur Event-Verarbeitung
+    private final CronParser cronParser; // Parser zur Validierung von Cron-Ausdrücken
 
+    /**
+     * Konstruktor mit Dependency Injection.
+     * Initialisiert den CronParser mit QUARTZ-Spezifikation (7-stellig).
+     * @param eventService Service-Schicht für Events
+     */
     @Autowired
     public EventController(EventService eventService) {
         this.eventService = eventService;
@@ -31,53 +38,100 @@ EventController {
         this.cronParser = new CronParser(definition);
     }
 
+    /**
+     * Erstellt ein einzelnes Event.
+     * @param event Das zu erstellende Event
+     * @return Das gespeicherte Event mit generierter ID
+     */
     @PostMapping
     public Event create(@RequestBody Event event) {
-        validateCron(event.getCron());
-        return eventService.createEvent(event);
+        validateCron(event.getCron()); // Cron-String wird überprüft
+        return eventService.createEvent(event); // Event wird gespeichert
     }
 
-    @PutMapping("/{id}") //id ist platzhalter
+    /**
+     * Aktualisiert ein bestehendes Event anhand seiner ID.
+     * @param id ID des zu aktualisierenden Events
+     * @param event Event-Daten, die gespeichert werden sollen
+     * @return Aktualisiertes Event
+     */
+    @PutMapping("/{id}") // id ist platzhalter
     public Event update(@PathVariable String id, @RequestBody Event event) {
-        validateCron(event.getCron());
-        event.setId(id);
+        validateCron(event.getCron()); // Cron-String wird überprüft
+        event.setId(id); // ID aus URL wird ins Event gesetzt
         return eventService.updateEvent(event);
     }
 
-    //einfacher REST Endpunkt der auf die Anfrage /hello einen Text "Hello World!" ausgibt.
+    /**
+     * Einfacher REST-Endpunkt der auf die Anfrage /hello einen Text "Hello World!" ausgibt.
+     * @return Begrüßungstext
+     */
     @GetMapping("/hello")
     public String hello(){
         return "Hello World!";
     }
 
+    /**
+     * Gibt ein Event anhand seiner ID zurück.
+     * @param id Die ID des gesuchten Events
+     * @return Event-Objekt
+     */
     @GetMapping("/{id}")
     public Event getById(@PathVariable String id) {
-        return eventService.getById(id);
+        return eventService.getById(id); // Sucht Event über Service
     }
 
+    /**
+     * Löscht ein Event anhand seiner ID.
+     * Gibt keinen Body zurück, sondern nur Status 204.
+     * @param id Die ID des zu löschenden Events
+     */
     @DeleteMapping("/{id}")
-    @ResponseStatus(HttpStatus.NO_CONTENT)
+    @ResponseStatus(HttpStatus.NO_CONTENT) // Gibt nur 204 No Content zurück
     public void delete(@PathVariable String id) {
-        eventService.deleteEvent(id);
+        eventService.deleteEvent(id); // Löscht Event über Service
     }
 
-    /**Validiert dient der Validierung von Cron Ausdrücken im kontext einem Spring Kontext*/
+    /**
+     * Validiert einen Cron-Ausdruck im Kontext eines Spring-Cron-Formats.
+     * Wenn der Ausdruck ungültig ist, wird eine 400-BAD_REQUEST zurückgegeben.
+     * @param cronPattern Der zu überprüfende Cron-Ausdruck
+     */
     private void validateCron(String cronPattern) {
         try {
-            cronParser.parse(cronPattern).validate(); //validate() prüft, ob das Pattern syntaktisch und semantisch korrekt
-        } catch (Exception e) { //Falls die Validierung fehlschlägt fängt es die exception ab
+            cronParser.parse(cronPattern).validate(); // validate() prüft, ob das Pattern syntaktisch und semantisch korrekt
+        } catch (Exception e) { // Falls die Validierung fehlschlägt, fängt es die Exception ab
             throw new ResponseStatusException(
-                    HttpStatus.BAD_REQUEST, //Der client bekommt den Fehlercode 400
-                    "Ungültiges Cron-Pattern: " + cronPattern //angezeigte error message
+                    HttpStatus.BAD_REQUEST, // Der Client bekommt den Fehlercode 400
+                    "Ungültiges Cron-Pattern: " + cronPattern // Angezeigte Error Message
             );
         }
     }
 
-    /**Rest Mapping Endpunkt im Controller */
-    @PostMapping("/batch") //Der Endpunkt reagiert auf HTTP POST-Anfragen an /api/events/batch
-    public List<Event> createEvents(@RequestBody List<Event> events) { //empfängt eine Liste von einem Json Body
-        return eventService.saveAll(events); //gibt die Liste an den Service der sie mit SaveAll in die Datenbank einschreibt
+    /**
+     * REST Mapping Endpunkt im Controller.
+     * Erstellt mehrere Events auf einmal (Batch-Insertion).
+     * @param events Liste von Events, die gespeichert werden sollen
+     * @return Liste der gespeicherten Events
+     */
+    @PostMapping("/batch") // Der Endpunkt reagiert auf HTTP POST-Anfragen an /api/events/batch
+    public List<Event> createEvents(@RequestBody List<Event> events) { // empfängt eine Liste von einem JSON-Body
+        return eventService.saveAll(events); // gibt die Liste an den Service, der sie mit saveAll in die Datenbank einschreibt
     }
+
+    /**
+     * Listet Events mit optionalen Filterkriterien.
+     * Unterstützt Filter wie Wochentag, Monat, Zeitfenster, Tag, Titel-Suchwort und Datumsbereich.
+     * @param weekday Optionaler Filter für Wochentag
+     * @param month Optionaler Filter für Monat
+     * @param from Optionaler Zeit-Startfilter ("08:00")
+     * @param to Optionaler Zeit-Endfilter ("12:00")
+     * @param tag Optionaler Tag-Filter
+     * @param titleContains Filtert nach Titeln, die den angegebenen String enthalten
+     * @param dateFrom Startdatum des Datumsbereichs
+     * @param dateTo Enddatum des Datumsbereichs
+     * @return Gefilterte Liste von Events
+     */
     @GetMapping
     public List<Event> listEvents(
             @RequestParam(required = false) String weekday,
@@ -89,8 +143,8 @@ EventController {
             @RequestParam(required = false) String dateFrom,
             @RequestParam(required = false) String dateTo
     ) {
-        FilterDto filter = new FilterDto();
-        filter.setWeekday(weekday);
+        FilterDto filter = new FilterDto(); // Neues Filter-Objekt
+        filter.setWeekday(weekday); // Übergabe aller Filter
         filter.setMonth(month);
         filter.setFrom(from);
         filter.setTo(to);
@@ -98,7 +152,6 @@ EventController {
         filter.setTitleContains(titleContains);
         filter.setDateFrom(dateFrom);
         filter.setDateTo(dateTo);
-        return eventService.listEvents(filter);
+        return eventService.listEvents(filter); // Rückgabe der gefilterten Liste
     }
 }
-
