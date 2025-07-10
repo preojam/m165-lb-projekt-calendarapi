@@ -142,6 +142,25 @@ db.events.find({
   end: { $lte: ISODate("2025-08-31T23:59:59Z") }
 })
 
+db.events.find({
+  title: /Review/i
+})
+ 
+db.events.find({
+  start: { $gte: ISODate("2025-08-01T00:00:00Z") }
+})
+ 
+db.events.find({
+  start: {
+    $gte: ISODate("2025-07-01T00:00:00Z"),
+    $lt: ISODate("2025-08-01T00:00:00Z")
+  }
+
+})
+db.events.find({ 
+  daysOfWeek: "MON"
+})
+ 
 
 ## 🧪 Tests
 
