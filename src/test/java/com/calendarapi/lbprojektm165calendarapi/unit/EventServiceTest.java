@@ -13,42 +13,59 @@ import java.util.Collections;
 import static org.mockito.Mockito.*;
 
 /**
- * Unit-Test für die Klasse {@link EventService}.
- * Testet das Verhalten der listEvents-Methode in Verbindung mit dem Repository.
+ * Unit-Testklasse für {@link EventService}.
+ * Testet die Interaktion mit dem {@link EventRepository} unter Verwendung von Mockito.
+ * Ziel ist es sicherzustellen, dass der Service korrekt mit dem Repository kommuniziert.
+ *
+ * <p>Dieser Test prüft keine Datenbank oder Logik – er testet die Verbindung (Integration) zwischen
+ * Service und Repository mit kontrolliertem Verhalten.</p>
+ *
+ * @author Chris
  */
 class EventServiceTest {
 
+    /**
+     * Simuliertes Repository – stellt sicher, dass keine echte Datenbank verwendet wird.
+     */
     @Mock
-    private EventRepository repository; // Wird durch Mockito simuliert
-
-    @InjectMocks
-    private EventService eventService; // Hier wird das Mock-Repository reingespritzt
+    private EventRepository repository;
 
     /**
-     * Konstruktor initialisiert die Mocks.
-     * Dies ersetzt die manuelle Initialisierung in jeder Testmethode.
+     * Die getestete Service-Klasse mit automatisch injiziertem Mock-Repository.
+     */
+    @InjectMocks
+    private EventService eventService;
+
+    /**
+     * Initialisiert die Mocks für diese Testklasse.
+     * Diese Methode wird beim Erstellen der Testklasse aufgerufen, um die Felder zu verbinden.
      */
     public EventServiceTest() {
-        MockitoAnnotations.openMocks(this); // Initialisiert alle Felder mit @Mock und @InjectMocks
+        MockitoAnnotations.openMocks(this);
     }
 
     /**
-     * Testet, ob der Service die Methode findByFilters im Repository korrekt aufruft.
-     * Der Filter enthält das Feld "titleContains", um nach Titeln zu suchen.
+     * Testfall:
+     * Prüft, ob die Methode {@code listEvents} im Service
+     * das Repository korrekt mit dem gegebenen Filter aufruft.
+     *
+     * @given Ein {@link FilterDto} mit {@code titleContains = "Meeting"}
+     * @when Die Methode {@code listEvents} aufgerufen wird
+     * @then Das Repository wird genau einmal mit diesem Filter abgefragt
      */
     @Test
     void listEvents_shouldCallRepositoryWithTitleContains() {
-        // GIVEN – Setup: Filter mit Titel "Meeting"
+        // GIVEN – Erstelle einen Filter mit einem Titelkriterium
         FilterDto filter = new FilterDto();
         filter.setTitleContains("Meeting");
 
-        // WHEN – Verhalten simulieren: Repository liefert leere Liste zurück
+        // WHEN – Definiere Verhalten des Mocks: Repository liefert leere Liste zurück
         when(repository.findByFilters(filter)).thenReturn(Collections.emptyList());
 
-        // Aufruf der zu testenden Methode
+        // Ausführung der Methode
         eventService.listEvents(filter);
 
-        // THEN – Überprüfen, ob das Repository genau einmal mit dem Filter aufgerufen wurde
+        // THEN – Verifiziere, dass das Repository genau einmal mit dem Filter aufgerufen wurde
         verify(repository, times(1)).findByFilters(filter);
     }
 }
