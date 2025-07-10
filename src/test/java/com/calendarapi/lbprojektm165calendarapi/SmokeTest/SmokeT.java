@@ -24,7 +24,7 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
  * <p>Diese Tests helfen dabei sicherzustellen, dass die grundlegende Infrastruktur der Anwendung intakt ist:
  * Spring-Kontext, MongoDB-Verbindung, Controller, Services, Repositories und grundlegende HTTP-Endpunkte.</p>
  *
- * @author Ricardo
+ * @author Ricardo Cardoso
  */
 @SpringBootTest
 @AutoConfigureMockMvc

@@ -13,7 +13,7 @@ import java.util.List;
  * <p>Diese Klasse wird verwendet, um wiederkehrende oder einmalige Termine
  * inklusive Metadaten wie Tags, Wochentage und Cron-Pattern zu speichern.</p>
  *
- * @author Ricardo
+ * @author Ricardo Cardoso
  */
 @Document(collection = "events")
 @Data

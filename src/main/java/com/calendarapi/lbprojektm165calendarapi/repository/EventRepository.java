@@ -11,7 +11,7 @@ import org.springframework.data.mongodb.repository.MongoRepository;
  * <p>Wird automatisch von Spring Data implementiert. Standardmethoden wie {@code findAll()}, {@code save()}, {@code deleteById()} usw.
  * sind verfügbar. Zusätzlich können eigene Methoden über {@link EventRepositoryCustom} hinzugefügt werden.</p>
  *
- * @author Ricardo
+ * @author Ricardo Cardoso
  */
 public interface EventRepository extends MongoRepository<Event, String>, EventRepositoryCustom {
 

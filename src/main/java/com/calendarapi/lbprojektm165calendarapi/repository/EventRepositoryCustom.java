@@ -13,7 +13,7 @@ import java.util.List;
  *
  * <p>Die tatsächliche Implementierung erfolgt in {@code EventRepositoryImpl}.</p>
  *
- * @author Ricardo
+ * @author Ricardo Cardoso
  */
 public interface EventRepositoryCustom {
 
