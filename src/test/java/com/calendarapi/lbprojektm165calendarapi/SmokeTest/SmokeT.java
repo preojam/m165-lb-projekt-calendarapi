@@ -19,11 +19,16 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 
 /**
  * Smoke-Test-Klasse zur Überprüfung, ob alle Hauptkomponenten der Anwendung korrekt geladen werden
- * und grundlegende Endpunkte verfügbar sind.
+ * und grundlegende REST-Endpunkte erreichbar und funktional sind.
+ *
+ * <p>Diese Tests helfen dabei sicherzustellen, dass die grundlegende Infrastruktur der Anwendung intakt ist:
+ * Spring-Kontext, MongoDB-Verbindung, Controller, Services, Repositories und grundlegende HTTP-Endpunkte.</p>
+ *
+ * @author Ricardo
  */
 @SpringBootTest
 @AutoConfigureMockMvc
-class CalendarAPISmokeTest {
+class SmokeT { // Optional: umbenennen in SmokeTest
 
     @Autowired
     private EventController eventController;
@@ -41,16 +46,17 @@ class CalendarAPISmokeTest {
     private EventRepository eventRepository;
 
     /**
-     * Prüft, ob der ApplicationContext korrekt geladen wird.
-     * Wenn der Test fehlschlägt, startet die App nicht korrekt.
+     * Testet, ob der Spring ApplicationContext korrekt geladen wird.
+     *
+     * <p>Dies ist ein grundlegender Test: Wenn er fehlschlägt, funktioniert die gesamte App nicht.</p>
      */
     @Test
     void contextLoads() {
-        // Prüft, ob der ApplicationContext ohne Fehler lädt
+        // Erfolgreicher Durchlauf = Context wurde geladen
     }
 
     /**
-     * Überprüft, ob der EventController korrekt vom Spring Context geladen wurde.
+     * Testet, ob der {@link EventController} korrekt vom Spring-Container instanziiert wurde.
      */
     @Test
     void eventControllerIsLoaded() {
@@ -58,7 +64,7 @@ class CalendarAPISmokeTest {
     }
 
     /**
-     * Überprüft, ob der EventService korrekt geladen wurde.
+     * Testet, ob der {@link EventService} korrekt geladen wurde.
      */
     @Test
     void eventServiceIsLoaded() {
@@ -66,7 +72,7 @@ class CalendarAPISmokeTest {
     }
 
     /**
-     * Überprüft, ob die MongoDB-Verbindung funktioniert und die Collection "events" existiert.
+     * Überprüft, ob die Verbindung zur MongoDB funktioniert und die Collection {@code events} existiert.
      */
     @Test
     void mongoDbIsAvailable() {
@@ -75,8 +81,9 @@ class CalendarAPISmokeTest {
     }
 
     /**
-     * Führt einen GET-Request auf den Events-Endpunkt aus, um sicherzustellen,
-     * dass dieser erreichbar ist und erfolgreich antwortet.
+     * Testet, ob der GET-Endpunkt {@code /api/events} erreichbar ist und einen HTTP 200 OK zurückliefert.
+     *
+     * @throws Exception falls die Anfrage fehlschlägt
      */
     @Test
     void eventEndpointIsReachable() throws Exception {
@@ -85,7 +92,7 @@ class CalendarAPISmokeTest {
     }
 
     /**
-     * Überprüft, ob das EventRepository korrekt geladen wurde.
+     * Testet, ob das {@link EventRepository} erfolgreich im Spring-Kontext vorhanden ist.
      */
     @Test
     void eventRepositoryIsLoaded() {
@@ -93,8 +100,8 @@ class CalendarAPISmokeTest {
     }
 
     /**
-     * Führt eine einfache Abfrage auf dem Repository aus, um sicherzustellen,
-     * dass die Datenbankabfrage funktioniert.
+     * Führt eine einfache Datenbankabfrage mit {@link EventRepository#findAll()} durch,
+     * um sicherzustellen, dass der Zugriff auf MongoDB funktioniert.
      */
     @Test
     void mongoDbQueryWorks() {
@@ -102,8 +109,10 @@ class CalendarAPISmokeTest {
     }
 
     /**
-     * Simuliert einen POST-Request mit ungültigen (leeren) Daten,
-     * um sicherzustellen, dass die API eine 400 Bad Request zurückgibt.
+     * Führt einen POST-Request mit einem ungültigen (leeren) JSON-Body aus
+     * und erwartet eine HTTP 400 Bad Request-Antwort von der API.
+     *
+     * @throws Exception falls die Anfrage fehlschlägt
      */
     @Test
     void createEventWithInvalidDataReturns400() throws Exception {

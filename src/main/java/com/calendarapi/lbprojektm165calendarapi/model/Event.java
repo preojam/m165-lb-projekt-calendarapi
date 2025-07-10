@@ -1,6 +1,5 @@
 package com.calendarapi.lbprojektm165calendarapi.model;
 
-import com.fasterxml.jackson.core.JsonToken;
 import lombok.*;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
@@ -9,7 +8,12 @@ import java.time.Instant;
 import java.util.List;
 
 /**
- * Repräsentiert ein Event-Dokument in der MongoDB-Collection "events".
+ * Repräsentiert ein Kalenderevent in der MongoDB-Collection "events".
+ *
+ * <p>Diese Klasse wird verwendet, um wiederkehrende oder einmalige Termine
+ * inklusive Metadaten wie Tags, Wochentage und Cron-Pattern zu speichern.</p>
+ *
+ * @author Ricardo
  */
 @Document(collection = "events")
 @Data
@@ -18,119 +22,57 @@ import java.util.List;
 @AllArgsConstructor
 public class Event {
 
+    /**
+     * Die eindeutige ID des Events (wird von MongoDB generiert).
+     */
     @Id
     private String id;
 
+    /**
+     * Der Titel des Events.
+     */
     private String title;
-    private String description;
-    private Instant start;
-    private Instant end;
-    private String cron;                  // für das Cron-Pattern
-    private List<String> tags;           // für Tags
-    private List<String> daysOfWeek;     // für Filter
-    private Integer dayOfMonth;          // fester Tag im Monat
-    private List<Integer> months;        // Liste von Monaten (z. B. [1, 6, 12])
 
     /**
-     * Vollständiger Konstruktor der Event-Klasse, um alle Attribute zu initialisieren.
+     * Eine Beschreibung des Events.
      */
-    public Event(String title, String description,
-                 Instant start, Instant end,
-                 String cron,
-                 List<String> tags,
-                 List<String> daysOfWeek,
-                 Integer dayOfMonth,
-                 List<Integer> months) {
-        this.title = title;
-        this.description = description;
-        this.start = start;
-        this.end = end;
-        this.cron = cron;
-        this.tags = tags;
-        this.daysOfWeek = daysOfWeek;
-        this.dayOfMonth = dayOfMonth;
-        this.months = months;
-    }
+    private String description;
 
-    // Getter & Setter
+    /**
+     * Der Startzeitpunkt des Events im ISO-Format (UTC).
+     */
+    private Instant start;
 
-    public String getId() {
-        return id;
-    }
+    /**
+     * Der Endzeitpunkt des Events im ISO-Format (UTC).
+     */
+    private Instant end;
 
-    public void setId(String id) {
-        this.id = id;
-    }
+    /**
+     * Ein optionales Cron-Pattern zur Definition wiederkehrender Events.
+     * <p>Beispiel: {@code "0 0 12 * * ?"}</p>
+     */
+    private String cron;
 
-    public List<Integer> getMonths() {
-        return months;
-    }
+    /**
+     * Eine Liste von Schlagwörtern (Tags), um Events zu kategorisieren oder filtern zu können.
+     */
+    private List<String> tags;
 
-    public void setMonths(List<Integer> months) {
-        this.months = months;
-    }
+    /**
+     * Wochentage, an denen das Event stattfindet.
+     * <p>Beispiel: {@code ["MONDAY", "WEDNESDAY"]}</p>
+     */
+    private List<String> daysOfWeek;
 
-    public String getTitle() {
-        return title;
-    }
+    /**
+     * Fester Tag im Monat, an dem das Event stattfindet (z.B. der 15.).
+     */
+    private Integer dayOfMonth;
 
-    public void setTitle(String title) {
-        this.title = title;
-    }
-
-    public String getDescription() {
-        return description;
-    }
-
-    public void setDescription(String description) {
-        this.description = description;
-    }
-
-    public Instant getStart() {
-        return start;
-    }
-
-    public void setStart(Instant start) {
-        this.start = start;
-    }
-
-    public Instant getEnd() {
-        return end;
-    }
-
-    public void setEnd(Instant end) {
-        this.end = end;
-    }
-
-    public String getCron() {
-        return cron;
-    }
-
-    public void setCron(String cron) {
-        this.cron = cron;
-    }
-
-    public List<String> getTags() {
-        return tags;
-    }
-
-    public void setTags(List<String> tags) {
-        this.tags = tags;
-    }
-
-    public List<String> getDaysOfWeek() {
-        return daysOfWeek;
-    }
-
-    public void setDaysOfWeek(List<String> daysOfWeek) {
-        this.daysOfWeek = daysOfWeek;
-    }
-
-    public Integer getDayOfMonth() {
-        return dayOfMonth;
-    }
-
-    public void setDayOfMonth(Integer dayOfMonth) {
-        this.dayOfMonth = dayOfMonth;
-    }
+    /**
+     * Liste von Monaten, in denen das Event stattfinden soll.
+     * <p>Beispiel: {@code [1, 6, 12]} für Januar, Juni und Dezember.</p>
+     */
+    private List<Integer> months;
 }
