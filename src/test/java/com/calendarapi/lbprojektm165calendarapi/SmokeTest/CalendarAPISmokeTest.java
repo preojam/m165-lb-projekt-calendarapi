@@ -19,7 +19,7 @@ import org.springframework.http.MediaType;
 
     @SpringBootTest
     @AutoConfigureMockMvc
-    class SmokeT {
+    class CalendarAPISmokeTest {
 
         @Autowired
         private EventController eventController;
